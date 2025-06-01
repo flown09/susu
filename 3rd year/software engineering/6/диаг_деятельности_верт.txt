@@ -1,0 +1,24 @@
+@startuml
+|User|
+start
+:Ввести текст\nсообщения;
+:Нажать кнопку\nотправки сообщения;
+
+|UI (ChatWindow)|
+:Вызвать метод\nsendMessage()\nу MessageController;
+
+|MessageController|
+:Создать объект Message;
+:Сохранить сообщение\nв базу данных;
+
+|UI (ChatWindow)|
+:Обновить UI\nу отправителя;
+
+|System|
+:Доставить сообщение\nполучателю;
+if (Уведомления включены?) then (да)
+  :Отправить уведомление\nо сообщении;
+endif
+
+stop
+@enduml

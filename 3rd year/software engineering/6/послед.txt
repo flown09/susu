@@ -1,0 +1,44 @@
+@startuml
+skinparam backgroundColor white
+skinparam defaultTextAlignment left
+skinparam shadowing false
+skinparam monochrome true
+skinparam ParticipantBackgroundColor white
+skinparam ParticipantBorderColor black
+skinparam ParticipantFontColor black
+skinparam ActorBackgroundColor white
+skinparam SequenceGroupBackgroundColor white
+skinparam SequenceGroupBorderColor black
+skinparam SequenceGroupFontColor black
+skinparam SequenceDividerBackgroundColor white
+skinparam SequenceDividerBorderColor black
+skinparam SequenceDividerFontColor black
+
+
+actor User
+participant "UI: ChatWindow" as UI
+participant "ctrl: MessageController" as MC
+participant "msg: Message" as Message
+participant "receiver: User" as Receiver
+participant "notif: Notification" as Notification
+
+== Отправка текстового сообщения ==
+User -> UI : typeMessage(text)
+UI -> MC : sendMessage(text, receiverId)
+
+MC -> Message : create(text, senderId, receiverId)
+activate Message
+Message --> MC : instance created
+deactivate Message
+
+MC -> Message : save()
+MC -> UI : updateChatWindow()
+
+alt receiver is online
+    MC -> Receiver : deliver(message)
+    MC -> Notification : create(message)
+    MC -> Receiver : notify()
+else receiver is offline
+    MC -> Message : mark as undelivered
+end
+@enduml
